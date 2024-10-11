@@ -4,13 +4,13 @@ library(httr)
 library(jsonlite)
 library(lab5)
 
-# 定义获取数据的函数
+
 get_kpi_data <- function(year) {
   url <- paste0("https://api.kolada.se/v2/data/kpi/N00945/year/", year)
   print(paste("Fetching data from URL:", url)) 
   response <- GET(url)  
   
-  # 检查响应状态码
+ 
   if (status_code(response) == 200) {
     data <- content(response, as = "text", encoding = "UTF-8") 
     json_data <- fromJSON(data)  
@@ -19,7 +19,7 @@ get_kpi_data <- function(year) {
     print("JSON Data Structure:")
     print(str(json_data))  
     
-    # 确保我们有值
+    
     if (!is.null(json_data$values) && nrow(json_data$values) > 0) {
       
       df <- do.call(rbind, lapply(1:nrow(json_data$values), function(i) {
@@ -50,7 +50,7 @@ ui <- fluidPage(
   titlePanel("Kolada KPI Data Analysis"),
   sidebarLayout(
     sidebarPanel(
-      selectInput("period", "KPI:", choices = as.character(2000:2023)), # 年份选择器
+      selectInput("period", "KPI:", choices = as.character(2000:2023)), 
       actionButton("load", "Load Data") 
     ),
     mainPanel(
@@ -61,7 +61,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  data_list <- reactiveVal(data.frame())  # 初始化为数据框
+  data_list <- reactiveVal(data.frame())  
 
   observeEvent(input$load, {
     data <- get_kpi_data(input$period)
